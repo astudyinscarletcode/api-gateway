@@ -22,7 +22,7 @@ module.exports = function (server, eventChannel) {
     handlePreflightRequest: function (req, res) {
       let headers = {
         'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-        'Access-Control-Allow-Origin': 'http://127.0.0.1:5151',
+        'Access-Control-Allow-Origin': 'https://shiny-github-dash.herokuapp.com',
         'Access-Control-Allow-Credentials': true
       }
 
