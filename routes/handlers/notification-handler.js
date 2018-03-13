@@ -5,6 +5,7 @@
 // Requires.
 let axios = require('axios')
 let jwt = require('./../../lib/auth/jwt')
+let https = require('https')
 let messages
 
 /**
@@ -22,7 +23,10 @@ module.exports.authorizeUser = function authorizeUser () {
     axios({
       method: 'PUT',
       headers: {'Authorization': req.headers.authorization},
-      url: process.env.NOTIFICATION_SERVICE + '/users'
+      url: process.env.NOTIFICATION_SERVICE + '/users',
+      httpsAgent: new https.Agent({
+        rejectUnauthorized: false
+      })
     })
     .then(() => {
       return next()
@@ -43,6 +47,9 @@ module.exports.addSubscription = function addSubscription () {
       method: 'PUT',
       headers: {'Authorization': req.headers.authorization},
       url: process.env.NOTIFICATION_SERVICE + '/users/subscriptions/',
+      httpsAgent: new https.Agent({
+        rejectUnauthorized: false
+      }),
       data: req.body
     })
     .then((result) => {
@@ -65,6 +72,9 @@ module.exports.removeSubscription = function addSubscription () {
       method: 'DELETE',
       headers: {'Authorization': req.headers.authorization},
       url: process.env.NOTIFICATION_SERVICE + '/users/subscriptions/',
+      httpsAgent: new https.Agent({
+        rejectUnauthorized: false
+      }),
       data: req.body
     })
     .then((result) => {
@@ -86,6 +96,9 @@ module.exports.getPreferences = function getPreferences () {
     axios({
       method: 'GET',
       headers: {'Authorization': req.headers.authorization},
+      httpsAgent: new https.Agent({
+        rejectUnauthorized: false
+      }),
       url: process.env.GITHUB_SERVICE + '/organizations/' + req.params.org + '/repos'
     })
     .then((result) => {
@@ -94,6 +107,9 @@ module.exports.getPreferences = function getPreferences () {
           axios({
             method: 'GET',
             headers: {'Authorization': req.headers.authorization},
+            httpsAgent: new https.Agent({
+              rejectUnauthorized: false
+            }),
             url: process.env.NOTIFICATION_SERVICE + '/preferences/' + req.params.org + '/' + repo
           })
           .then((result) => {
@@ -125,6 +141,9 @@ module.exports.updatePreferences = function updatePreferences () {
         method: 'PUT',
         headers: {'Authorization': req.headers.authorization},
         url: process.env.NOTIFICATION_SERVICE + '/preferences/' + req.params.org + '/' + repo.name,
+        httpsAgent: new https.Agent({
+          rejectUnauthorized: false
+        }),
         data: {allowed: repo.allowed}
       })
     }))
@@ -147,6 +166,9 @@ module.exports.handleNotificationEvents = function handleNotificationEvents () {
       method: 'POST',
       headers: {'Authorization': 'Bearer ' + jwt.create(data.user)},
       url: process.env.NOTIFICATION_SERVICE + '/users/notify',
+      httpsAgent: new https.Agent({
+        rejectUnauthorized: false
+      }),
       data: data.payload
     })
   })
