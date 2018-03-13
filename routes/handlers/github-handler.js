@@ -5,6 +5,7 @@
 // Requires.
 let axios = require('axios')
 let jwt = require('./../../lib/auth/jwt')
+let https = require('https')
 let messages
 
 /**
@@ -23,6 +24,9 @@ module.exports.authorizeUser = function authorizeUser () {
     axios({
       method: 'PUT',
       headers: {'Authorization': 'Bearer ' + jwt.create(req.body)},
+      httpsAgent: new https.Agent({
+        rejectUnauthorized: false
+      }),
       url: process.env.GITHUB_SERVICE + '/user'
     })
     .then((response) => {
@@ -45,6 +49,9 @@ module.exports.getAdminOrganizations = function getAdminOrganizations () {
     axios({
       method: 'get',
       headers: {'Authorization': req.headers.authorization},
+      httpsAgent: new https.Agent({
+        rejectUnauthorized: false
+      }),
       url: process.env.GITHUB_SERVICE + '/organizations'
     })
     .then((result) => {
@@ -72,6 +79,9 @@ module.exports.createWebHooks = function createWebHooks () {
       return axios({
         method: 'PUT',
         headers: {'Authorization': req.headers.authorization},
+        httpsAgent: new https.Agent({
+          rejectUnauthorized: false
+        }),
         url: process.env.GITHUB_SERVICE + '/organizations/hooks/' + organization.login,
         data: {callback: process.env.CURRENT_URL + '/github/event/' + req.user + '/' + organization.login}
       })
@@ -111,6 +121,9 @@ module.exports.handleUserConnectionEvents = function handleUserConnectionEvents 
     axios({
       method: 'GET',
       headers: {'Authorization': 'Bearer ' + jwt.create(data.user)},
+      httpsAgent: new https.Agent({
+        rejectUnauthorized: false
+      }),
       url: process.env.GITHUB_SERVICE + '/organizations/' + data.org + '/events'
     })
     .then((result) => {
@@ -125,6 +138,9 @@ module.exports.handleUserConnectionEvents = function handleUserConnectionEvents 
       method: 'POST',
       headers: {'Authorization': 'Bearer ' + jwt.create(data.user)},
       url: process.env.GITHUB_SERVICE + '/user/poll',
+      httpsAgent: new https.Agent({
+        rejectUnauthorized: false
+      }),
       data: {
         org: data.org
       }
