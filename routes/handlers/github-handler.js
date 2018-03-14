@@ -149,7 +149,7 @@ module.exports.handleUserConnectionEvents = function handleUserConnectionEvents 
 }
 
 /**
- * Formats the json payload.
+ * Format the json payload.
  */
 function createMessage (data, type) {
   let payload = {}
