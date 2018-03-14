@@ -110,6 +110,9 @@ module.exports.handleGithubEvents = function handleGithubEvents (userWebsocketCo
           sendMessage('offline notification', {user: req.params.user, payload: createMessage(payload, 'current')})
         }
       })
+      .catch(() => {
+        sendMessage('offline notification', {user: req.params.user, payload: createMessage(req.body, 'current')})
+      })
   }
 }
 
