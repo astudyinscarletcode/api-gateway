@@ -84,7 +84,7 @@ function handleConnections () {
  */
 function handleConnection (socket) {
   clients[socket.user].sockets.push(socket.id)
-  messages.emit('user connect', {user: socket.user, org: socket.handshake.query.organization})
+  if (clients[socket.user].sockets.length === 1) messages.emit('user connect', {user: socket.user, org: socket.handshake.query.organization})
 }
 
 /**
